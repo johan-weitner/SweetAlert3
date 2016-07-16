@@ -40,7 +40,8 @@ export var defaultParams = {
   inputAttributes: {},
   inputValidator: null,
   onOpen: null,
-  onClose: null
+  onClose: null,
+  inputs: null
 };
 
 export var sweetHTML = '<div class="' + swalClasses.overlay + '" tabIndex="-1"></div>' +
@@ -58,13 +59,7 @@ export var sweetHTML = '<div class="' + swalClasses.overlay + '" tabIndex="-1"><
     '<img class="' + swalClasses.image + '">' +
     '<h2></h2>' +
     '<div class="' + swalClasses.content + '"></div>' +
-    '<input class="' + swalClasses.input + '">' +
-    '<select class="' + swalClasses.select + '"></select>' +
-    '<div class="' + swalClasses.radio + '"></div>' +
-    '<label for="' + swalClasses.checkbox + '" class="' + swalClasses.checkbox + '">' +
-      '<input type="checkbox" id="' + swalClasses.checkbox + '">' +
-    '</label>' +
-    '<textarea class="' + swalClasses.textarea + '"></textarea>' +
+    '<form></form>' +
     '<div class="' + swalClasses.validationerror + '"></div>' +
     '<hr class="' + swalClasses.spacer + '">' +
     '<button type="button" class="' + swalClasses.confirm + '">OK</button>' +

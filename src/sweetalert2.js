@@ -84,6 +84,14 @@ var setParameters = function(params) {
     dom.hide($content);
   }
 
+  // Form items
+  modal.getElementsByTagName('form')[0].innerHTML = '';
+  if (params.inputs) {
+    for (var i = params.inputs.length - 1; i >= 0; i--) {
+      dom.addInput(params.inputs[i]);
+    }
+  }
+
   // Close button
   if (params.showCloseButton) {
     dom.show($closeButton);
@@ -269,19 +277,6 @@ function modalDependant() {
       extend(params, arguments[0]);
       params.extraParams = arguments[0].extraParams;
 
-      if (params.input === 'email' && params.inputValidator === null) {
-        params.inputValidator = function(email) {
-          return new Promise(function(resolve, reject) {
-            var emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-            if (emailRegex.test(email)) {
-              resolve();
-            } else {
-              reject('Invalid email address');
-            }
-          });
-        };
-      }
-
       break;
 
     default:
@@ -406,6 +401,30 @@ function modalDependant() {
         case 'click':
           // Clicked 'confirm'
           if (targetedConfirm && sweetAlert.isVisible()) {
+            if (params.inputs) {
+              var inputValues = {};
+
+              for (var i = params.inputs.length - 1; i >= 0; i--) {
+                var input = params.inputs[i];
+                if (input.validator) {
+                  input.validator(input.value, params.extraParams).then(
+                    function() {
+                      sweetAlert.enableInput();
+                      confirm(inputValue);
+                    },
+                    function(error) {
+                      sweetAlert.enableInput();
+                      if (error) {
+                        sweetAlert.showValidationError(error);
+                      }
+                    }
+                  );
+                }
+                inputValues[params.inputs[i].name] = params.inputs[i].value;
+              }
+
+              confirm(inputValues);
+            }
             if (params.input) {
               var inputValue = getInputValue();
 
@@ -645,139 +664,136 @@ function modalDependant() {
     sweetAlert.hideLoading();
     sweetAlert.resetValidationError();
 
-    // input, select
-    var inputTypes = ['input', 'select', 'radio', 'checkbox', 'textarea'];
-    var input;
-    for (i = 0; i < inputTypes.length; i++) {
-      var inputClass = swalClasses[inputTypes[i]];
-      input = dom.getChildByClass(modal, inputClass);
+    // input
+    // var inputTypes = ['input', 'select', 'radio', 'checkbox', 'textarea'];
+    // var input;
+    // for (i = 0; i < inputTypes.length; i++) {
+    //   var inputClass = swalClasses[inputTypes[i]];
+    //   input = dom.getChildByClass(modal, inputClass);
 
-      // set attributes
-      while (input.attributes.length > 0) {
-        input.removeAttribute(input.attributes[0].name);
-      }
-      for (var attr in params.inputAttributes) {
-        input.setAttribute(attr, params.inputAttributes[attr]);
-      }
+    //   // set attributes
+    //   while (input.attributes.length > 0) {
+    //     input.removeAttribute(input.attributes[0].name);
+    //   }
+    //   for (var attr in params.inputAttributes) {
+    //     input.setAttribute(attr, params.inputAttributes[attr]);
+    //   }
 
-      // set class
-      input.className = inputClass;
-      if (params.inputClass) {
-        dom.addClass(input, params.inputClass);
-      }
+    //   // set class
+    //   input.className = inputClass;
+    //   if (params.inputClass) {
+    //     dom.addClass(input, params.inputClass);
+    //   }
 
-      dom._hide(input);
-    }
+    //   dom._hide(input);
+    // }
 
-    var populateInputOptions;
-    switch (params.input) {
-      case 'text':
-      case 'email':
-      case 'password':
-      case 'file':
-      case 'number':
-      case 'tel':
-      case 'range':
-        input = dom.getChildByClass(modal, swalClasses.input);
-        input.value = params.inputValue;
-        input.placeholder = params.inputPlaceholder;
-        input.type = params.input;
-        dom._show(input);
-        break;
-      case 'select':
-        var select = dom.getChildByClass(modal, swalClasses.select);
-        select.innerHTML = '';
-        if (params.inputPlaceholder) {
-          var placeholder = document.createElement('option');
-          placeholder.innerHTML = params.inputPlaceholder;
-          placeholder.value = '';
-          placeholder.disabled = true;
-          placeholder.selected = true;
-          select.appendChild(placeholder);
-        }
-        populateInputOptions = function(inputOptions) {
-          for (var optionValue in inputOptions) {
-            var option = document.createElement('option');
-            option.value = optionValue;
-            option.innerHTML = inputOptions[optionValue];
-            if (params.inputValue === optionValue) {
-              option.selected = true;
-            }
-            select.appendChild(option);
-          }
-          dom._show(select);
-          select.focus();
-        };
-        break;
-      case 'radio':
-        var radio = dom.getChildByClass(modal, swalClasses.radio);
-        radio.innerHTML = '';
-        populateInputOptions = function(inputOptions) {
-          for (var radioValue in inputOptions) {
-            var id = 1;
-            var radioInput = document.createElement('input');
-            var radioLabel = document.createElement('label');
-            var radioLabelSpan = document.createElement('span');
-            radioInput.type = 'radio';
-            radioInput.name = swalClasses.radio;
-            radioInput.value = radioValue;
-            radioInput.id = swalClasses.radio + '-' + (id++);
-            if (params.inputValue === radioValue) {
-              radioInput.checked = true;
-            }
-            radioLabelSpan.innerHTML = inputOptions[radioValue];
-            radioLabel.appendChild(radioInput);
-            radioLabel.appendChild(radioLabelSpan);
-            radioLabel.for = radioInput.id;
-            radio.appendChild(radioLabel);
-          }
-          dom._show(radio);
-          var radios = radio.querySelectorAll('input');
-          if (radios.length) {
-            radios[0].focus();
-          }
-        };
-        break;
-      case 'checkbox':
-        var checkbox = dom.getChildByClass(modal, swalClasses.checkbox);
-        var checkboxInput = modal.querySelector('#' + swalClasses.checkbox);
-        checkboxInput.value = 1;
-        checkboxInput.checked = Boolean(params.inputValue);
-        var label = checkbox.getElementsByTagName('span');
-        if (label.length) {
-          checkbox.removeChild(label[0]);
-        }
-        label = document.createElement('span');
-        label.innerHTML = params.inputPlaceholder;
-        checkbox.appendChild(label);
-        dom._show(checkbox);
-        break;
-      case 'textarea':
-        var textarea = dom.getChildByClass(modal, swalClasses.textarea);
-        textarea.value = params.inputValue;
-        textarea.placeholder = params.inputPlaceholder;
-        dom._show(textarea);
-        break;
-      case null:
-        break;
-      default:
-        console.error('SweetAlert2: Unexpected type of input! Expected "text" or "email" or "password", "select", "checkbox", "textarea" or "file", got "' + params.input + '"');
-        break;
-    }
+    // var populateInputOptions;
+    // switch (params.input) {
+    //   case 'text':
+    //   case 'email':
+    //   case 'password':
+    //   case 'file':
+    //     input = dom.getChildByClass(modal, swalClasses.input);
+    //     input.value = params.inputValue;
+    //     input.placeholder = params.inputPlaceholder;
+    //     input.type = params.input;
+    //     dom._show(input);
+    //     break;
+    //   case 'select':
+    //     var select = dom.getChildByClass(modal, swalClasses.select);
+    //     select.innerHTML = '';
+    //     if (params.inputPlaceholder) {
+    //       var placeholder = document.createElement('option');
+    //       placeholder.innerHTML = params.inputPlaceholder;
+    //       placeholder.value = '';
+    //       placeholder.disabled = true;
+    //       placeholder.selected = true;
+    //       select.appendChild(placeholder);
+    //     }
+    //     populateInputOptions = function(inputOptions) {
+    //       for (var optionValue in inputOptions) {
+    //         var option = document.createElement('option');
+    //         option.value = optionValue;
+    //         option.innerHTML = inputOptions[optionValue];
+    //         if (params.inputValue === optionValue) {
+    //           option.selected = true;
+    //         }
+    //         select.appendChild(option);
+    //       }
+    //       dom._show(select);
+    //       select.focus();
+    //     };
+    //     break;
+    //   case 'radio':
+    //     var radio = dom.getChildByClass(modal, swalClasses.radio);
+    //     radio.innerHTML = '';
+    //     populateInputOptions = function(inputOptions) {
+    //       for (var radioValue in inputOptions) {
+    //         var id = 1;
+    //         var radioInput = document.createElement('input');
+    //         var radioLabel = document.createElement('label');
+    //         var radioLabelSpan = document.createElement('span');
+    //         radioInput.type = 'radio';
+    //         radioInput.name = swalClasses.radio;
+    //         radioInput.value = radioValue;
+    //         radioInput.id = swalClasses.radio + '-' + (id++);
+    //         if (params.inputValue === radioValue) {
+    //           radioInput.checked = true;
+    //         }
+    //         radioLabelSpan.innerHTML = inputOptions[radioValue];
+    //         radioLabel.appendChild(radioInput);
+    //         radioLabel.appendChild(radioLabelSpan);
+    //         radioLabel.for = radioInput.id;
+    //         radio.appendChild(radioLabel);
+    //       }
+    //       dom._show(radio);
+    //       var radios = radio.querySelectorAll('input');
+    //       if (radios.length) {
+    //         radios[0].focus();
+    //       }
+    //     };
+    //     break;
+    //   case 'checkbox':
+    //     var checkbox = dom.getChildByClass(modal, swalClasses.checkbox);
+    //     var checkboxInput = modal.querySelector('#' + swalClasses.checkbox);
+    //     checkboxInput.value = 1;
+    //     checkboxInput.checked = Boolean(params.inputValue);
+    //     var label = checkbox.getElementsByTagName('span');
+    //     if (label.length) {
+    //       checkbox.removeChild(label[0]);
+    //     }
+    //     label = document.createElement('span');
+    //     label.innerHTML = params.inputPlaceholder;
+    //     checkbox.appendChild(label);
+    //     dom._show(checkbox);
+    //     break;
+    //   case 'textarea':
+    //     var textarea = dom.getChildByClass(modal, swalClasses.textarea);
+    //     textarea.value = params.inputValue;
+    //     textarea.placeholder = params.inputPlaceholder;
+    //     dom._show(textarea);
+    //     break;
+    //   case null:
+    //     break;
+    //   default:
+    //     console.error('SweetAlert2: Unexpected type of input! Expected "text" or "email" or "password", "select", "checkbox", "textarea" or "file", got "' + params.input + '"');
+    //     break;
+    // }
 
-    if (params.input === 'select' || params.input === 'radio') {
-      if (params.inputOptions instanceof Promise) {
-        sweetAlert.showLoading();
-        params.inputOptions.then(function(inputOptions) {
-          sweetAlert.hideLoading();
-          populateInputOptions(inputOptions);
-        });
-      } else if (typeof params.inputOptions === 'object') {
-        populateInputOptions(params.inputOptions);
-      } else {
-        console.error('SweetAlert2: Unexpected type of inputOptions! Expected object or Promise, got ' + typeof params.inputOptions);
-      }
-    }
+    // if (params.input === 'select' || params.input === 'radio') {
+    //   if (params.inputOptions instanceof Promise) {
+    //     sweetAlert.showLoading();
+    //     params.inputOptions.then(function(inputOptions) {
+    //       sweetAlert.hideLoading();
+    //       populateInputOptions(inputOptions);
+    //     });
+    //   } else if (typeof params.inputOptions === 'object') {
+    //     populateInputOptions(params.inputOptions);
+    //   } else {
+    //     console.error('SweetAlert2: Unexpected type of inputOptions! Expected object or Promise, got ' + typeof params.inputOptions);
+    //   }
+    // }
 
     fixVerticalPosition();
     openModal(params.animation, params.onOpen);

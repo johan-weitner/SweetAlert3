@@ -1,4 +1,5 @@
 import { swalPrefix, swalClasses } from './classes.js';
+import validators from './validators.js';
 
 // Remember state in cases where opening and handling a modal will fiddle with it.
 export var states = {
@@ -262,3 +263,118 @@ export var removeMediaQuery = function(mediaqueryId) {
     head.removeChild(mediaquery);
   }
 };
+
+export var addInput = function(input) {
+  var modal = getModal();
+  var inputId = swalPrefix + '_' + input.name;
+
+  var fieldSet = document.createElement('fieldset');
+
+  if (!input.tag) {
+    input.tag = 'input';
+  }
+
+  // Input value getters and setters
+  var defaultValue = input.value;
+  delete input.value;
+
+  Object.defineProperty(input, 'value', {
+    get: function() {
+      if (!document.getElementById(inputId)) {
+        return null;
+      }
+      return document.getElementById(inputId).value;
+    },
+    set: function(value) {
+      if (document.getElementById(inputId)) {
+        document.getElementById(inputId).value = value;
+      }
+      value = value;
+    }
+  });
+
+  // Provide default validators
+  if (typeof input.validator == 'undefined') {
+    if (validators[input.type]) {
+      Object.defineProperty(input, 'validator', validators[input.type]);
+    }
+  }
+
+  input.value = defaultValue;
+
+  // Add label if present
+  if (input.label) {
+    var label = document.createElement('label');
+    label.for = inputId;
+    label.innerHTML = input.label;
+
+    fieldSet.appendChild(label);
+  }
+
+  var inputNode = document.createElement(input.tag);
+  inputNode.id = inputId;
+  inputNode.name = input.name;
+
+  // Add base class
+  if (swalClasses[input.tag]) {
+    inputNode.className = swalClasses[input.tag];
+  }
+
+  // Add custom attributes
+  if (input.attributes) {
+    var attributes = Object.keys(input.attributes);
+    for (var i = attributes.length - 1; i >= 0; i--) {
+      var attr = input.attributes[attributes[i]];
+      if (inputNode[attributes[i]]) {
+        inputNode[attributes[i]] += attr;
+      } else {
+        inputNode[attributes[i]] = attr;
+      }
+    }
+  }
+
+  // Input specific setup
+  switch (input.tag) {
+    case 'select':
+      if (input.options) {
+        var inputOptions = Object.keys(input.options);
+        if (input.attributes && input.attributes.placeholder) {
+          var option = document.createElement('option');
+          option.selected = true;
+          option.disabled = true;
+          option.innerHTML = input.attributes.placeholder;
+          
+          inputNode.appendChild(option);
+        }
+        for (var i = inputOptions.length - 1; i >= 0; i--) {
+          var option = document.createElement('option');
+          
+          option.value = inputOptions[i];
+          option.innerHTML = input.options[inputOptions[i]];
+          
+          inputNode.appendChild(option);
+        }
+      }
+      break;
+
+    case null:
+      // Silence is golden
+      break;
+  }
+
+  // Add events
+  inputNode.oninput = function() {
+    sweetAlert.resetValidationError();
+  };
+  inputNode.onkeyup = function(event) {
+    event.stopPropagation();
+    if (event.keyCode === 13) {
+      sweetAlert.clickConfirm();
+    }
+  };
+
+  fieldSet.appendChild(inputNode);
+
+  // Attach to form
+  modal.getElementsByTagName('form')[0].appendChild(fieldSet);
+}
