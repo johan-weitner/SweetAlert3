@@ -266,9 +266,9 @@ export var removeMediaQuery = function(mediaqueryId) {
 
 export var addInput = function(input) {
   var modal = getModal();
-  var inputId = swalPrefix + '_' + input.name;
-
   var fieldSet = document.createElement('fieldset');
+
+  input.id = swalPrefix + '_' + input.name;
 
   if (!input.tag) {
     input.tag = 'input';
@@ -280,39 +280,39 @@ export var addInput = function(input) {
 
   Object.defineProperty(input, 'value', {
     get: function() {
-      if (!document.getElementById(inputId)) {
+      if (!document.getElementById(input.id)) {
         return null;
       }
-      return document.getElementById(inputId).value;
+
+      return document.getElementById(input.id).value;
     },
     set: function(value) {
-      if (document.getElementById(inputId)) {
-        document.getElementById(inputId).value = value;
+      if (document.getElementById(input.id)) {
+        document.getElementById(input.id).value = value;
       }
       value = value;
     }
   });
+  input.value = defaultValue;
 
   // Provide default validators
   if (typeof input.validator == 'undefined') {
     if (validators[input.type]) {
-      Object.defineProperty(input, 'validator', validators[input.type]);
+      input.validator = validators[input.type];
     }
   }
-
-  input.value = defaultValue;
 
   // Add label if present
   if (input.label) {
     var label = document.createElement('label');
-    label.for = inputId;
+    label.for = input.id;
     label.innerHTML = input.label;
 
     fieldSet.appendChild(label);
   }
 
   var inputNode = document.createElement(input.tag);
-  inputNode.id = inputId;
+  inputNode.id = input.id;
   inputNode.name = input.name;
 
   // Add base class
@@ -377,4 +377,6 @@ export var addInput = function(input) {
 
   // Attach to form
   modal.getElementsByTagName('form')[0].appendChild(fieldSet);
+
+  return input;
 }

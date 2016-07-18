@@ -403,52 +403,58 @@ function modalDependant() {
           if (targetedConfirm && sweetAlert.isVisible()) {
             if (params.inputs) {
               var inputValues = {};
-
+              var validators = [];
+              sweetAlert.disableInput();
               for (var i = params.inputs.length - 1; i >= 0; i--) {
                 var input = params.inputs[i];
+
+                // Add any validators to an array so we can 
+                // utilise Promise.all
                 if (input.validator) {
-                  input.validator(input.value, params.extraParams).then(
-                    function() {
-                      sweetAlert.enableInput();
-                      confirm(inputValue);
-                    },
-                    function(error) {
-                      sweetAlert.enableInput();
-                      if (error) {
-                        sweetAlert.showValidationError(error);
-                      }
-                    }
-                  );
+                  validators.push(input.validator(input.value, input));
                 }
-                inputValues[params.inputs[i].name] = params.inputs[i].value;
+
+                inputValues[input.name] = input.value;
               }
-
-              confirm(inputValues);
-            }
-            if (params.input) {
-              var inputValue = getInputValue();
-
-              if (params.inputValidator) {
-                sweetAlert.disableInput();
-                params.inputValidator(inputValue, params.extraParams).then(
-                  function() {
+              if (validators.length) {
+                Promise.all(validators)
+                  .then(function() {
                     sweetAlert.enableInput();
-                    confirm(inputValue);
-                  },
-                  function(error) {
+                    confirm(inputValues);
+                  }, function(error) {
                     sweetAlert.enableInput();
                     if (error) {
-                      sweetAlert.showValidationError(error);
+                      sweetAlert.showValidationError(error.message, input);
                     }
-                  }
-                );
-              } else {
-                confirm(inputValue);
+                  });
               }
-
-            } else {
-              confirm(true);
+              return;
+              confirm(inputValues);
             }
+            // if (params.input) {
+            //   var inputValue = getInputValue();
+
+            //   if (params.inputValidator) {
+            //     sweetAlert.disableInput();
+            //     params.inputValidator(inputValue, params.extraParams).then(
+            //       function() {
+            //         sweetAlert.enableInput();
+            //         confirm(inputValue);
+            //       },
+            //       function(error) {
+            //         sweetAlert.enableInput();
+            //         if (error) {
+            //           sweetAlert.showValidationError(error);
+            //         }
+            //       }
+            //     );
+            //   } else {
+            //     confirm(inputValue);
+            //   }
+
+            // } else {
+            //   confirm(true);
+            // }
 
           // Clicked 'cancel'
           } else if (targetedCancel && sweetAlert.isVisible()) {
@@ -615,48 +621,48 @@ function modalDependant() {
     };
 
     sweetAlert.enableInput = function() {
-      var input = getInput();
-      if (input.type === 'radio') {
-        var radiosContainer = input.parentNode.parentNode;
-        var radios = radiosContainer.querySelectorAll('input');
-        for (var i = 0; i < radios.length; i++) {
-          radios[i].disabled = false;
+      var inputTypes = ['input', 'select', 'textarea'];
+
+      for (var i = inputTypes.length - 1; i >= 0; i--) {
+        var inputNodes = modal.getElementsByTagName('form')[0].getElementsByTagName(inputTypes[i]);
+        for (var iNode = inputNodes.length - 1; iNode >= 0; iNode--) {
+          inputNodes[iNode].removeAttribute("disabled");
         }
-      } else {
-        input.disabled = false;
       }
     };
 
     sweetAlert.disableInput = function() {
-      var input = getInput();
-      if (input.type === 'radio') {
-        var radiosContainer = input.parentNode.parentNode;
-        var radios = radiosContainer.querySelectorAll('input');
-        for (var i = 0; i < radios.length; i++) {
-          radios[i].disabled = true;
+      var inputTypes = ['input', 'select', 'textarea'];
+
+      for (var i = inputTypes.length - 1; i >= 0; i--) {
+        var inputNodes = modal.getElementsByTagName('form')[0].getElementsByTagName(inputTypes[i]);
+        for (var iNode = inputNodes.length - 1; iNode >= 0; iNode--) {
+          inputNodes[iNode].setAttribute("disabled", true);
         }
-      } else {
-        input.disabled = true;
       }
     };
 
-    sweetAlert.showValidationError = function(error) {
+    sweetAlert.showValidationError = function(error, input) {
       var $validationError = modal.querySelector('.' + swalClasses.validationerror);
       $validationError.innerHTML = error;
       dom.show($validationError);
 
-      var input = getInput();
-      dom.focusInput(input);
-      dom.addClass(input, 'error');
+      var inputNode = document.getElementById(input.id);
+      dom.focusInput(inputNode);
+      dom.addClass(inputNode, 'error');
     };
 
     sweetAlert.resetValidationError = function() {
       var $validationError = modal.querySelector('.' + swalClasses.validationerror);
       dom.hide($validationError);
 
-      var input = getInput();
-      if (input) {
-        dom.removeClass(input, 'error');
+      var inputTypes = ['input', 'select', 'textarea'];
+
+      for (var i = inputTypes.length - 1; i >= 0; i--) {
+        var inputNodes = modal.getElementsByTagName('form')[0].getElementsByTagName(inputTypes[i]);
+        for (var iNode = inputNodes.length - 1; iNode >= 0; iNode--) {
+          dom.removeClass(inputNodes[iNode], 'error');
+        }
       }
     };
 

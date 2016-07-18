@@ -71,7 +71,7 @@ gulp.task('default', ['compress', 'sass']);
 gulp.task('watch', function() {
   gulp.watch([
     'src/**/*.js',
-    'test/*.js',
+    'test/*.js'
   ], ['compress', 'test']);
 
   gulp.watch([
