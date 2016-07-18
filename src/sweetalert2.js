@@ -83,10 +83,26 @@ var setParameters = function(params) {
   } else {
     dom.hide($content);
   }
+  // Backwards compatability - let's use the new format!
+  if (params.input) {
+    var legacyInput = {
+        tag:         params.input,
+        name:        params.name,
+        placeholder: params.inputPlaceholder,
+        validator:   params.inputValidator,
+    };
+
+    if (params.input === 'select') {
+        legacyInput.options = params.inputOptions;
+    }
+  }
 
   // Form items
   modal.getElementsByTagName('form')[0].innerHTML = '';
   if (params.inputs) {
+    // We're doing a reverse loop, so reverse 
+    // original data to retain order
+    params.inputs.reverse();
     for (var i = params.inputs.length - 1; i >= 0; i--) {
       dom.addInput(params.inputs[i]);
     }
@@ -424,7 +440,7 @@ function modalDependant() {
                   }, function(error) {
                     sweetAlert.enableInput();
                     if (error) {
-                      sweetAlert.showValidationError(error.message, input);
+                      sweetAlert.showValidationError(error.message, error.input);
                     }
                   });
               }

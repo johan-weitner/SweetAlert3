@@ -300,6 +300,10 @@ export var addInput = function(input) {
     if (validators[input.type]) {
       input.validator = validators[input.type];
     }
+  } else if (typeof input.validator == 'string') {
+    if (validators[input.validator]) {
+      input.validator = validators[input.validator];
+    }
   }
 
   // Add label if present
