@@ -468,7 +468,11 @@
   padding: 0;
 }
 
-.swal2-input:not([type="file"]),
+.swal2-input[type=text],
+.swal2-input[type=email],
+.swal2-input[type=password],
+.swal2-input[type=number],
+.swal2-input[type=tel],
 .swal2-textarea,
 .swal2-select {
   width: 100%;
@@ -508,6 +512,9 @@
   }
   &::-webkit-input-placeholder {
     color: lighten(#575757, 40);
+  }
+  &[disabled] {
+    background-color: darken(#FFF, 2.5%);
   }
 }
 

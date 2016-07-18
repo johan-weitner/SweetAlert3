@@ -4,6 +4,7 @@ import { defaultParams, sweetHTML } from './utils/default.js';
 import { swalClasses, iconTypes } from './utils/classes.js';
 import { extend, colorLuminance, isFunction } from './utils/utils.js';
 import * as dom from './utils/dom.js';
+import * as form from './utils/form.js';
 
 var modalParams = extend({}, defaultParams);
 
@@ -86,15 +87,27 @@ var setParameters = function(params) {
   // Backwards compatability - let's use the new format!
   if (params.input) {
     var legacyInput = {
-        tag:         params.input,
-        name:        params.name,
+        tag: (function() {
+            if (['email', 'password', 'text', 'number', 'file', 'radio', 'checkbox'].indexOf(params.input) > -1) {
+                return 'input';
+            }
+
+            return params.input;
+        })(),
+        name:        params.input,
         placeholder: params.inputPlaceholder,
         validator:   params.inputValidator,
+        attributes:  params.inputAttributes,
+        options:     params.inputOptions,
     };
 
     if (params.input === 'select') {
         legacyInput.options = params.inputOptions;
     }
+    if (!params.inputs || typeof params.inputs !== 'object') {
+        params.inputs = [];
+    }
+    params.inputs.push(legacyInput);
   }
 
   // Form items
@@ -103,9 +116,7 @@ var setParameters = function(params) {
     // We're doing a reverse loop, so reverse 
     // original data to retain order
     params.inputs.reverse();
-    for (var i = params.inputs.length - 1; i >= 0; i--) {
-      dom.addInput(params.inputs[i]);
-    }
+    form.generateForm(params.inputs);
   }
 
   // Close button
@@ -427,7 +438,7 @@ function modalDependant() {
                 // Add any validators to an array so we can 
                 // utilise Promise.all
                 if (input.validator) {
-                  validators.push(input.validator(input.value, input));
+                  validators.push(input.validator(input));
                 }
 
                 inputValues[input.name] = input.value;
