@@ -87,25 +87,25 @@ var setParameters = function(params) {
   // Backwards compatability - let's use the new format!
   if (params.input) {
     var legacyInput = {
-        tag: (function() {
-            if (['email', 'password', 'text', 'number', 'file', 'radio', 'checkbox'].indexOf(params.input) > -1) {
-                return 'input';
-            }
+      tag: (function() {
+        if (['email', 'password', 'text', 'number', 'file', 'radio', 'checkbox'].indexOf(params.input) > -1) {
+          return 'input';
+        }
 
-            return params.input;
-        })(),
-        name:        params.input,
-        placeholder: params.inputPlaceholder,
-        validator:   params.inputValidator,
-        attributes:  params.inputAttributes,
-        options:     params.inputOptions,
+        return params.input;
+      })(),
+      name: params.input,
+      placeholder: params.inputPlaceholder,
+      validator: params.inputValidator,
+      attributes: params.inputAttributes,
+      options: params.inputOptions
     };
 
     if (params.input === 'select') {
-        legacyInput.options = params.inputOptions;
+      legacyInput.options = params.inputOptions;
     }
     if (!params.inputs || typeof params.inputs !== 'object') {
-        params.inputs = [];
+      params.inputs = [];
     }
     params.inputs.push(legacyInput);
   }
@@ -113,7 +113,7 @@ var setParameters = function(params) {
   // Form items
   modal.getElementsByTagName('form')[0].innerHTML = '';
   if (params.inputs) {
-    // We're doing a reverse loop, so reverse 
+    // We're doing a reverse loop, so reverse
     // original data to retain order
     params.inputs.reverse();
     form.generateForm(params.inputs);
@@ -435,7 +435,7 @@ function modalDependant() {
               for (var i = params.inputs.length - 1; i >= 0; i--) {
                 var input = params.inputs[i];
 
-                // Add any validators to an array so we can 
+                // Add any validators to an array so we can
                 // utilise Promise.all
                 if (input.validator) {
                   validators.push(input.validator(input));
@@ -653,7 +653,7 @@ function modalDependant() {
       for (var i = inputTypes.length - 1; i >= 0; i--) {
         var inputNodes = modal.getElementsByTagName('form')[0].getElementsByTagName(inputTypes[i]);
         for (var iNode = inputNodes.length - 1; iNode >= 0; iNode--) {
-          inputNodes[iNode].removeAttribute("disabled");
+          inputNodes[iNode].removeAttribute('disabled');
         }
       }
     };
@@ -664,7 +664,7 @@ function modalDependant() {
       for (var i = inputTypes.length - 1; i >= 0; i--) {
         var inputNodes = modal.getElementsByTagName('form')[0].getElementsByTagName(inputTypes[i]);
         for (var iNode = inputNodes.length - 1; iNode >= 0; iNode--) {
-          inputNodes[iNode].setAttribute("disabled", true);
+          inputNodes[iNode].setAttribute('disabled', true);
         }
       }
     };
