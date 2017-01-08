@@ -26,7 +26,7 @@
     "rollup": "latest",
     "rollup-plugin-babel": "latest",
     "standard": "latest",
-    "testee": "^0.3.0",
+    "testee": "latest",
     "uglify-js": "latest"
   },
   "standard": {

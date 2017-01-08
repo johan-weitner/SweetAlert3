@@ -220,6 +220,12 @@ declare module "sweetalert2" {
         width?: number|string;
 
         /**
+        * If set to true, modal width and height will be 100% of the viewport.
+        * Default: false
+        */
+        fullscreen?: boolean;
+
+        /**
          * Modal window padding.
          * Default: 20
          */

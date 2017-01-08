@@ -19,8 +19,12 @@ const setParameters = (params) => {
     }
   }
 
-  // set modal width and margin-left
-  modal.style.width = (typeof params.width === 'number') ? params.width + 'px' : params.width
+  // set modal width
+  if (params.fullscreen) {
+    modal.style.width = '100%'
+  } else {
+    modal.style.width = (typeof params.width === 'number') ? params.width + 'px' : params.width
+  }
 
   modal.style.padding = params.padding + 'px'
   modal.style.background = params.background
@@ -238,7 +242,7 @@ const openModal = (animation, onComplete) => {
   } else {
     dom.removeClass(modal, swalClasses.fade)
   }
-  dom.show(modal)
+  dom.show(modal, 'flex')
 
   // scrolling is 'hidden' until animation is done, after that 'auto'
   sweetContainer.style.overflowY = 'hidden'
@@ -695,9 +699,13 @@ const modalDependant = (...args) => {
     // Set modal min-height to disable scrolling inside the modal
     sweetAlert.recalculateHeight = dom.debounce(() => {
       const modal = dom.getModal()
+      if (params.fullscreen) {
+        modal.style.minHeight = '100%'
+        return
+      }
       const prevState = modal.style.display
       modal.style.minHeight = ''
-      dom.show(modal)
+      dom.show(modal, 'flex')
       modal.style.minHeight = (modal.scrollHeight + 1) + 'px'
       modal.style.display = prevState
     }, 50)

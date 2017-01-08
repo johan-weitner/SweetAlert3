@@ -30,6 +30,7 @@ export const defaultParams = {
   imageClass: null,
   timer: null,
   width: 500,
+  fullscreen: false,
   padding: 20,
   background: '#fff',
   input: null,
