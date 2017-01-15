@@ -52,9 +52,6 @@ body {
 
   z-index: 1060;
 
-  // TODO: remove/add the element from DOM instead
-  &:not(.swal2-in) { pointer-events: none; }
-
   &.swal2-fade {
     transition: background-color .1s;
   }

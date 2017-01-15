@@ -47,7 +47,7 @@ export const defaultParams = {
   onClose: null
 }
 
-const sweetHTML = `
+export const sweetHTML = `
   <div  role="dialog" aria-labelledby="modalTitleId" aria-describedby="modalContentId" class="${swalClasses.modal}" tabIndex="-1" >
     <ul class="${swalClasses.progresssteps}"></ul>
     <div class="${swalClasses.icon} ${iconTypes.error}">
@@ -82,15 +82,3 @@ const sweetHTML = `
     <span class="${swalClasses.close}">&times;</span>
   </div>
 `.replace(/(^|\n)\s*/g, '')
-
-export let sweetContainer
-
-const existingSweetContainers = document.getElementsByClassName(swalClasses.container)
-
-if (existingSweetContainers.length) {
-  sweetContainer = existingSweetContainers[0]
-} else {
-  sweetContainer = document.createElement('div')
-  sweetContainer.className = swalClasses.container
-  sweetContainer.innerHTML = sweetHTML
-}

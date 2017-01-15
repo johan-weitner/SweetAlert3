@@ -2,7 +2,7 @@
 
 import { default as sweetAlert } from '../sweetalert2.js'
 import { swalPrefix, swalClasses } from './classes.js'
-import { sweetContainer } from './default.js'
+import { sweetHTML } from './default.js'
 
 // Remember state in cases where opening and handling a modal will fiddle with it.
 export const states = {
@@ -22,6 +22,9 @@ export const init = () => {
     return
   }
 
+  const sweetContainer = document.createElement('div')
+  sweetContainer.className = swalClasses.container
+  sweetContainer.innerHTML = sweetHTML
   document.body.appendChild(sweetContainer)
 
   const modal = getModal()
@@ -78,9 +81,11 @@ export const init = () => {
 /*
  * Manipulate DOM
  */
-export const elementByClass = (className) => sweetContainer.querySelector('.' + className)
+export const getContainer = () => document.body.querySelector('.' + swalClasses.container)
 
-export const getModal = () => document.body.querySelector('.' + swalClasses.modal) || init()
+export const elementByClass = (className) => getContainer() ? getContainer().querySelector('.' + className) : null
+
+export const getModal = () => getContainer() ? getContainer().querySelector('.' + swalClasses.modal) : null
 
 export const getIcons = () => {
   const modal = getModal()
@@ -237,9 +242,8 @@ export const animationEndEvent = (() => {
   return false
 })()
 
-// Reset the page to its previous state
+// Reset previous window keydown handler and focued element
 export const resetPrevState = () => {
-  const modal = getModal()
   window.onkeydown = states.previousWindowKeyDown
   if (states.previousActiveElement && states.previousActiveElement.focus) {
     let x = window.scrollX
@@ -247,7 +251,6 @@ export const resetPrevState = () => {
     states.previousActiveElement.focus()
     window.scrollTo(x, y)
   }
-  clearTimeout(modal.timeout)
 }
 
 // Measure width of scrollbar
