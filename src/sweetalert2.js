@@ -252,13 +252,16 @@ const openModal = (animation, onComplete) => {
     container.style.overflowY = 'auto'
   }
 
-  dom.addClass(container, swalClasses.in)
+  dom.addClass(document.documentElement, swalClasses.in)
   dom.addClass(document.body, swalClasses.in)
+  dom.addClass(container, swalClasses.in)
   fixScrollbar()
   iOSfix()
   dom.states.previousActiveElement = document.activeElement
   if (onComplete !== null && typeof onComplete === 'function') {
-    onComplete(modal)
+    setTimeout(function () {
+      onComplete(modal)
+    })
   }
 }
 
@@ -1013,6 +1016,7 @@ sweetAlert.close = sweetAlert.closeModal = (onComplete) => {
 
   const removeModalAndResetState = () => {
     container.remove()
+    dom.removeClass(document.documentElement, swalClasses.in)
     dom.removeClass(document.body, swalClasses.in)
     undoScrollbar()
     undoIOSfix()
@@ -1031,7 +1035,9 @@ sweetAlert.close = sweetAlert.closeModal = (onComplete) => {
     removeModalAndResetState()
   }
   if (onComplete !== null && typeof onComplete === 'function') {
-    onComplete(modal)
+    setTimeout(function () {
+      onComplete(modal)
+    })
   }
 }
 

@@ -1,5 +1,5 @@
 /*!
- * sweetalert2 v6.3.5
+ * sweetalert2 v6.3.8
  * Released under the MIT License.
  */
 'use strict';
@@ -362,7 +362,10 @@ var resetPrevState = function resetPrevState() {
   var modal = getModal();
   window.onkeydown = states.previousWindowKeyDown;
   if (states.previousActiveElement && states.previousActiveElement.focus) {
+    var x = window.scrollX;
+    var y = window.scrollY;
     states.previousActiveElement.focus();
+    window.scrollTo(x, y);
   }
   clearTimeout(modal.timeout);
 };
@@ -683,13 +686,16 @@ var openModal = function openModal(animation, onComplete) {
     sweetContainer.style.overflowY = 'auto';
   }
 
-  addClass(sweetContainer, swalClasses.in);
+  addClass(document.documentElement, swalClasses.in);
   addClass(document.body, swalClasses.in);
+  addClass(sweetContainer, swalClasses.in);
   fixScrollbar();
   iOSfix();
   states.previousActiveElement = document.activeElement;
   if (onComplete !== null && typeof onComplete === 'function') {
-    onComplete(modal);
+    setTimeout(function () {
+      onComplete(modal);
+    });
   }
 };
 
@@ -1482,8 +1488,9 @@ sweetAlert.close = sweetAlert.closeModal = function (onComplete) {
   var hideModalAndResetState = function hideModalAndResetState() {
     hide(modal);
     modal.style.minHeight = '';
-    removeClass(sweetContainer, swalClasses.in);
+    removeClass(document.documentElement, swalClasses.in);
     removeClass(document.body, swalClasses.in);
+    removeClass(sweetContainer, swalClasses.in);
     undoScrollbar();
     undoIOSfix();
   };
@@ -1501,7 +1508,9 @@ sweetAlert.close = sweetAlert.closeModal = function (onComplete) {
     hideModalAndResetState();
   }
   if (onComplete !== null && typeof onComplete === 'function') {
-    onComplete(modal);
+    setTimeout(function () {
+      onComplete(modal);
+    });
   }
 };
 
@@ -1547,7 +1556,7 @@ sweetAlert.resetDefaults = function () {
 
 sweetAlert.noop = function () {};
 
-sweetAlert.version = '6.3.5';
+sweetAlert.version = '6.3.8';
 
 sweetAlert.default = sweetAlert;
 
