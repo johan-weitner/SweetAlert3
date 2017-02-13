@@ -111,13 +111,14 @@ Handling Dismissals
 
 When an alert is dismissed by the user, the Promise returned by `swal()` will reject with a string documenting the reason it was dismissed:
 
-| String      | Description                                             | Related configuration |
-| ----------- | ------------------------------------------------------- | --------------------- |
-| `'overlay'` | The user clicked the overlay.                           | `allowOutsideClick`   |
-| `'cancel'`  | The user clicked the cancel button.                     | `showCancelButton`    |
-| `'close'`   | The user clicked the close button.                      | `showCloseButton`     |
-| `'esc'`     | The user pressed the <kbd>Esc</kbd> key.                | `allowEscapeKey`      |
-| `'timer'`   | The timer ran out, and the alert closed automatically.  | `timer`               |
+| String         | Description                                             | Related configuration |
+| -------------- | ------------------------------------------------------- | --------------------- |
+| `'overlay'`    | The user clicked the overlay.                           | `allowOutsideClick`   |
+| `'cancel'`     | The user clicked the cancel button.                     | `showCancelButton`    |
+| `'close'`      | The user clicked the close button.                      | `showCloseButton`     |
+| `'esc'`        | The user pressed the <kbd>Esc</kbd> key.                | `allowEscapeKey`      |
+| `'timer'`      | The timer ran out, and the alert closed automatically.  | `timer`               |
+| `'altaction'`  | The user clicked the AltAction button.                  | `showAltActionButton`               |
 
 If rejections are not handled, it will be logged as an error. To avoid this, add a rejection handler to the Promise. Alternatively, you can use `.catch(swal.noop)` as a quick way to simply suppress the errors:
 
@@ -155,12 +156,16 @@ Configuration
 | `allowEscapeKey`        | `true`               | If set to `false`, the user can't dismiss the modal by pressing the <kbd>Esc</kbd> key. |
 | `showConfirmButton`     | `true`               | If set to `false`, a "Confirm"-button will not be shown. It can be useful when you're using `html` parameter for custom HTML description. |
 | `showCancelButton`      | `false`              | If set to `true`, a "Cancel"-button will be shown, which the user can click on to dismiss the modal. |
+| `showAltActionButton`   | `false`              | If set to `true`, an "AltAction"-button will be shown, which the user can click to trigger a third option. |
 | `confirmButtonText`     | `'OK'`               | Use this to change the text on the "Confirm"-button. |
 | `cancelButtonText`      | `'Cancel'`           | Use this to change the text on the "Cancel"-button. |
+| `altActionButtonText`   | `'AltAction'`        | Use this to change the text on the "AltAction"-button. |
 | `confirmButtonColor`    | `'#3085d6'`          | Use this to change the background color of the "Confirm"-button (must be a HEX value). |
 | `cancelButtonColor`     | `'#aaa'`             | Use this to change the background color of the "Cancel"-button (must be a HEX value). |
+| `altActionButtonColor`  | `'#3085d6'`          | Use this to change the background color of the "AltAction"-button (must be a HEX value). |
 | `confirmButtonClass`    | `null`               | A custom CSS class for the "Confirm"-button. |
 | `cancelButtonClass`     | `null`               | A custom CSS class for the "Cancel"-button. |
+| `altActionButtonClass`  | `null`               | A custom CSS class for the "AltAction"-button. |
 | `buttonsStyling`        | `true`               | Apply default styling to buttons. If you want to use your own classes (e.g. Bootstrap classes) set this parameter to `false`. |
 | `reverseButtons`        | `false`              | Set to `true` if you want to invert default buttons positions ("Confirm"-button on the right side). |
 | `focusCancel`           | `false`              | Set to `true` if you want to focus the "Cancel"-button by default. |
@@ -208,6 +213,7 @@ Methods
 | `swal.disableLoading()` or `swal.hideLoading()` | Enable buttons and hide loader. |
 | `swal.clickConfirm()`                           | Click the "Confirm"-button programmatically. |
 | `swal.clickCancel()`                            | Click the "Cancel"-button programmatically. |
+| `swal.clickAltAction()`                         | Click the "AltAction"-button programmatically. |
 | `swal.showValidationError(error)`               | Show validation error message. |
 | `swal.resetValidationError()`                   | Hide validation error message. |
 | `swal.getInput()`                               | Get the input DOM node, this method works with `input` parameter. |
