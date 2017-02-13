@@ -1,12 +1,8 @@
 /*!
- * sweetalert2 v6.3.9
+ * sweetalert3 v6.3.10
  * Released under the MIT License.
  */
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.Sweetalert2 = factory());
-}(this, (function () { 'use strict';
+'use strict';
 
 var swalPrefix = 'swal2-';
 
@@ -1593,11 +1589,9 @@ sweetAlert.resetDefaults = function () {
 
 sweetAlert.noop = function () {};
 
-sweetAlert.version = '6.3.9';
+sweetAlert.version = '6.3.10';
 
 sweetAlert.default = sweetAlert;
 
-return sweetAlert;
-
-})));
-if (window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
+module.exports = sweetAlert;
+if (window.Sweetalert3) window.sweetAlert = window.swal = window.Sweetalert3;
