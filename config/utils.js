@@ -26,7 +26,7 @@ const write = (dest, code) => {
 const packageRollup = (options) => {
   const moduleId = classify(pack.name)
   return rollup({
-    entry: 'src/sweetalert2.js',
+    entry: 'src/sweetalert3.js',
     plugins: [
       babel({
         exclude: 'node_modules/**'

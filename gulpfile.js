@@ -34,7 +34,7 @@ gulp.task('production', () => {
 })
 
 gulp.task('sass', ['sass-lint'], () => {
-  gulp.src('src/sweetalert2.scss')
+  gulp.src('src/sweetalert3.scss')
     .pipe(sass())
     .pipe(autoprefix())
     .pipe(gulp.dest('dist'))
@@ -74,7 +74,7 @@ gulp.task('watch', () => {
   ], ['compress'])
 
   gulp.watch([
-    'src/sweetalert2.scss',
+    'src/sweetalert3.scss',
     'assets/example.scss'
   ], ['sass'])
 })

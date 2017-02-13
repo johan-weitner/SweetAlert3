@@ -28,9 +28,9 @@
   ],
   "description": "A replacement for JavaScript's popup boxes, supported fork of sweetalert",
   "main": [
-    "dist/sweetalert2.js",
-    "src/sweetalert2.scss",
-    "dist/sweetalert2.css"
+    "dist/sweetalert3.js",
+    "src/sweetalert3.scss",
+    "dist/sweetalert3.css"
   ],
   "keywords": [
     "alert",
@@ -38,7 +38,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:limonte/sweetalert2.git"
+    "url": "git@github.com:johan-weitner/sweetalert3.git"
   },
   "license": "MIT"
 }

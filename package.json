@@ -5,8 +5,8 @@
   "homepage": "https://github.com/johan-weitner/SweetAlert3/",
   "description": "A replacement for JavaScript's popup boxes, supported fork of sweetalert",
   "main": "dist/sweetalert3.js",
-  "jsnext:main": "src/sweetalert2.js",
-  "types": "sweetalert2.d.ts",
+  "jsnext:main": "src/sweetalert3.js",
+  "types": "sweetalert3.d.ts",
   "dependencies": {
     "es6-promise": "^4.0.5"
   },
@@ -26,7 +26,7 @@
     "rollup": "latest",
     "rollup-plugin-babel": "latest",
     "standard": "latest",
-    "testee": "^0.3.0",
+    "testee": "^0.3.1",
     "uglify-js": "latest"
   },
   "standard": {
@@ -40,7 +40,7 @@
   "files": [
     "dist",
     "src",
-    "sweetalert2.d.ts"
+    "sweetalert3.d.ts"
   ],
   "author": "Limon Monte <limon.monte@gmail.com> (https://limonte.github.io)",
   "contributors": [

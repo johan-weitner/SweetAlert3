@@ -1,6 +1,6 @@
 /* global MouseEvent */
 
-import { default as sweetAlert } from '../sweetalert2.js'
+import { default as sweetAlert } from '../sweetalert3.js'
 import { swalPrefix, swalClasses } from './classes.js'
 import { sweetContainer } from './default.js'
 
