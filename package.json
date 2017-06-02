@@ -1,6 +1,6 @@
 {
   "name": "sweetalert3",
-  "version": "6.3.10",
+  "version": "6.3.11",
   "repository": "johan-weitner/SweetAlert3",
   "homepage": "https://github.com/johan-weitner/SweetAlert3/",
   "description": "A replacement for JavaScript's popup boxes, supported fork of sweetalert",

@@ -517,6 +517,7 @@ const modalDependant = (...args) => {
 
           // Clicked 'cancel'
           } else if (targetedAltAction && sweetAlert.isVisible()) {
+            sweetAlert.closeModal(params.onClose)
             reject('altaction')
           } else if (targetedCancel && sweetAlert.isVisible()) {
             sweetAlert.closeModal(params.onClose)

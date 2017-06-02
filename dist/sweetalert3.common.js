@@ -1,5 +1,5 @@
 /*!
- * sweetalert3 v6.3.10
+ * sweetalert3 v6.3.11
  * Released under the MIT License.
  */
 'use strict';
@@ -962,6 +962,7 @@ var modalDependant = function modalDependant() {
 
             // Clicked 'cancel'
           } else if (targetedAltAction && sweetAlert.isVisible()) {
+            sweetAlert.closeModal(params.onClose);
             reject('altaction');
           } else if (targetedCancel && sweetAlert.isVisible()) {
             sweetAlert.closeModal(params.onClose);
@@ -1589,7 +1590,7 @@ sweetAlert.resetDefaults = function () {
 
 sweetAlert.noop = function () {};
 
-sweetAlert.version = '6.3.10';
+sweetAlert.version = '6.3.11';
 
 sweetAlert.default = sweetAlert;
 
